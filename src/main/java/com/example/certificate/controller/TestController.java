@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,7 +32,7 @@ public class TestController {
 //
 //    }
 
-    @PostMapping
+    @PostMapping (value = "/setExam")  //시험을 치기전 세팅을 해주는 controller
     public void setExam(@RequestParam("year") String year,
                         @RequestParam("round") String round,
                         @RequestParam("userId") String userId
@@ -39,21 +40,26 @@ public class TestController {
         LocalDate now = LocalDate.now();
         UserTest userTest = UserTest.
                 builder().
-                userId(userId).
-                testDate(now).
+                userId(userId). //유저 아이디
+                testDate(now).  //오늘 날짜
                 build();
         List<Test> tests = testService.getExam(year, round);  //시험 문제를 가져옴
         int num = 1; //문제 번호
         for (Test test:tests){
             Exam exam = Exam.builder().
                     userTest(userTest).
-                    testId(test.getId()).
+                    testId(test.getId()). //문제 아이디
                     examNum(num++).
                     state(0).
             build();
             testService.setExam(exam);
         }
     }
-
+    @GetMapping ("/getExam")
+    public ResponseEntity<ProblemDto> getExam( @RequestParam("userId") String userId,
+                                               @RequestParam("num") String num){
+        ProblemDto problemDto = ProblemDto.builder().build();
+        return new ResponseEntity<>(problemDto, HttpStatus.OK);
+    }
 
 }

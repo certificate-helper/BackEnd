@@ -2,47 +2,85 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Form Submission</title>
-    <script>
-        function submitForm(event) {
-            event.preventDefault(); // 기본 폼 제출 동작을 막음
-
-            var input1 = document.getElementById("input1").value;
-            var input2 = document.getElementById("input2").value;
-            var input3 = document.getElementById("input3").value;
-            var input4 = document.getElementById("input4").value;
-
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "http://localhost:8080/test", true);
-            xhr.setRequestHeader("Content-Type", "application/json");
-
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    document.getElementById("input1").value = "";
-                    document.getElementById("input2").value = "";
-                    document.getElementById("input3").value = "";
-                    document.getElementById("input4").value = "";
-                }
-            };
-
-            var data = JSON.stringify({
-                "input1": input1,
-                "input2": input2,
-                "input3": input3,
-                "input4": input4
-            });
-
-            xhr.send(data);
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input Form</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
         }
-    </script>
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        input, textarea {
+            width: 800px;
+            padding: 10px;
+            font-size: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        textarea {
+            height: 450px; /* Adjust this value as needed */
+        }
+        button {
+            width: 100px;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
-<form onsubmit="submitForm(event)">
-    <input type="text" id="input1" placeholder="Input 1"><br>
-    <input type="text" id="input2" placeholder="Input 2"><br>
-    <input type="text" id="input3" placeholder="Input 3"><br>
-    <input type="text" id="input4" placeholder="Input 4"><br>
-    <button type="submit">Submit</button>
-</form>
+<div class="container">
+    <form id="vocaForm">
+        <div>
+        <input type="text" name="voca" placeholder="Enter text here" required>
+        </div>
+        <div>
+        <textarea name="explain" placeholder="Enter your paragraph here" required></textarea>
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+<script>
+        document.getElementById('vocaForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the form from submitting the traditional way
+
+            const formData = new FormData(this);
+
+            fetch('/insertVoca', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Clear the form inputs
+                    this.reset();
+                    alert('Form submitted successfully!');
+                } else {
+                    alert('Form submission failed!');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Form submission failed!');
+            });
+        });
+    </script>
 </body>
 </html>
