@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Form Submission</title>
+    <script>
+        function submitForm(event) {
+            event.preventDefault(); // 기본 폼 제출 동작을 막음
+
+            var input1 = document.getElementById("input1").value;
+            var input2 = document.getElementById("input2").value;
+            var input3 = document.getElementById("input3").value;
+            var input4 = document.getElementById("input4").value;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost:8080/test", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    document.getElementById("input1").value = "";
+                    document.getElementById("input2").value = "";
+                    document.getElementById("input3").value = "";
+                    document.getElementById("input4").value = "";
+                }
+            };
+
+            var data = JSON.stringify({
+                "input1": input1,
+                "input2": input2,
+                "input3": input3,
+                "input4": input4
+            });
+
+            xhr.send(data);
+        }
+    </script>
+</head>
+<body>
+<form onsubmit="submitForm(event)">
+    <input type="text" id="input1" placeholder="Input 1"><br>
+    <input type="text" id="input2" placeholder="Input 2"><br>
+    <input type="text" id="input3" placeholder="Input 3"><br>
+    <input type="text" id="input4" placeholder="Input 4"><br>
+    <button type="submit">Submit</button>
+</form>
+</body>
+</html>
