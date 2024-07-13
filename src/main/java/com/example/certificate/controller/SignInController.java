@@ -3,6 +3,8 @@ package com.example.certificate.controller;
 
 import com.example.certificate.entity.User;
 import com.example.certificate.service.SignInService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -29,14 +31,12 @@ public class SignInController {
             return new ResponseEntity<>("ok", HttpStatus.OK);
         }
 
-        @PostMapping(value = "/signIn") //회원가입
-        public ResponseEntity<String> signIn(@RequestParam("id") String id,
+        @PostMapping(value = "/signUp") //회원가입
+        public ResponseEntity<String> signUp(@RequestParam("id") String id,
                                             @RequestParam("pass") String pass
                                             ///,@RequestParam("test") List<String> test
         )
         {
-            System.out.println("id: "+id);
-            System.out.println("pass: "+pass);
             try {
                 signInService.registUser(id,pass);
             }catch (Exception e){
@@ -44,4 +44,18 @@ public class SignInController {
             }
             return new ResponseEntity<>("ok", HttpStatus.OK);
         }
+
+    @GetMapping(value = "/signIn")  //로그인
+    public   ResponseEntity<String> signIn(@RequestParam("id") String id,
+                                           @RequestParam("pass") String pass,
+                                           HttpServletRequest request){
+        List<User> user = signInService.logIn(id,pass);
+        if(user.size() != 0){
+            HttpSession session = request.getSession();
+            session.setAttribute("user", id);
+            return new ResponseEntity<>("ok", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("no", HttpStatus.OK);
+
+    }
 }

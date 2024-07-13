@@ -16,6 +16,12 @@ public class SignInRepository {
                 .setParameter("id", id)
                 .getResultList();
     }
+    public List<User> logIn(String id,String password){
+        return em.createQuery("SELECT m FROM User m WHERE m.id =:id and m.password =:password", User.class)
+                .setParameter("id", id)
+                .setParameter("password", password)
+                .getResultList();
+    }
     public void registUser(User user){
         em.persist(user);
     }
