@@ -16,7 +16,7 @@ public class SignInRepository {
                 .setParameter("id", id)
                 .getResultList();
     }
-    public void registUser(String id,String pass){
-
+    public void registUser(User user){
+        em.persist(user);
     }
 }

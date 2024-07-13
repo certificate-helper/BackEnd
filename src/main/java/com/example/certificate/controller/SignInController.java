@@ -31,8 +31,12 @@ public class SignInController {
 
         @PostMapping(value = "/signIn") //회원가입
         public ResponseEntity<String> signIn(@RequestParam("id") String id,
-                                            @RequestParam("pass") String pass,
-                                            @RequestParam("test") List<String> test){
+                                            @RequestParam("pass") String pass
+                                            ///,@RequestParam("test") List<String> test
+        )
+        {
+            System.out.println("id: "+id);
+            System.out.println("pass: "+pass);
             try {
                 signInService.registUser(id,pass);
             }catch (Exception e){
