@@ -16,7 +16,12 @@ public class VocaService {
     public void insertVoca(VocabularyList vocabularyList){
         vocaRepository.insertVoca(vocabularyList);
     }
+
+    @Transactional(readOnly = true)
     public List<VocabularyList> getMyVoca(String id, int num){
         return vocaRepository.getMyVoca(id,num);
     }
+    @Transactional(readOnly = true)
+    public List<VocabularyList> searchTitle(String userId,String title) { return vocaRepository.searchVoca(userId,title);}
+
 }

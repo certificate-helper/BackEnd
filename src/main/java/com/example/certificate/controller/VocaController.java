@@ -28,6 +28,29 @@ public class VocaController {
                     build();
             vocaService.insertVoca(vocabularyList);
         }
+        @GetMapping (value = "/searchVoca")  //단어 제목으로 검색하는 컨트롤러
+        public  ResponseEntity<VocaDto> searchVoca(@RequestParam("id") String id,
+                                                   @RequestParam("title") String title){
+            VocabularyList vocabularyList = null;
+            try {
+                List<VocabularyList> results = vocaService.searchTitle(id, title);
+                if (results.isEmpty()) {
+                    // 검색 결과가 없는 경우
+                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                }
+                vocabularyList = results.get(0);
+            } catch (Exception e) {
+                // 예외가 발생한 경우
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+
+            VocaDto vocaDto = VocaDto.builder().
+                    myVoca(vocabularyList.getMyVoca()).
+                    myExplain(vocabularyList.getMyExplain()).
+                    build();
+            return  new ResponseEntity<>(vocaDto,HttpStatus.OK);
+        }
 
         @GetMapping (value = "/getVoca")
         public ResponseEntity<List<VocaDto>> getVoca(@RequestParam("id") String id,

@@ -16,6 +16,13 @@ public class VocaRepository {
         em.persist(vocabularyList);
     }
 
+
+    public List<VocabularyList> searchVoca(String userId,String myVoca){
+        return em.createQuery("SELECT m FROM VocabularyList m WHERE m.userId =:userId and m.myVoca =:myVoca"  , VocabularyList.class)
+                .setParameter("userId", userId)
+                .setParameter("myVoca", myVoca)
+                .getResultList();
+    }
     public List<VocabularyList> getMyVoca(String userId,int num){
 
         return em.createQuery("SELECT m FROM VocabularyList m WHERE m.userId =:userId " , VocabularyList.class)
