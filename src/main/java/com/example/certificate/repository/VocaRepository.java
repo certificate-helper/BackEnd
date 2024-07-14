@@ -1,9 +1,12 @@
 package com.example.certificate.repository;
 
+import com.example.certificate.entity.Test;
 import com.example.certificate.entity.VocabularyList;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
@@ -11,5 +14,14 @@ public class VocaRepository {
     private  final EntityManager em;
     public void insertVoca(VocabularyList vocabularyList){
         em.persist(vocabularyList);
+    }
+
+    public List<VocabularyList> getMyVoca(String userId,int num){
+
+        return em.createQuery("SELECT m FROM VocabularyList m WHERE m.userId =:userId " , VocabularyList.class)
+                .setParameter("userId", userId)
+//                .setFirstResult(num)
+//                .setMaxResults(1)
+                .getResultList();
     }
 }
