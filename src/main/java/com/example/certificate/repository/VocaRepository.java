@@ -23,12 +23,12 @@ public class VocaRepository {
                 .setParameter("myVoca", myVoca)
                 .getResultList();
     }
-    public List<VocabularyList> getMyVoca(String userId,int num){
+    public List<VocabularyList> getVoca(int num){
 
-        return em.createQuery("SELECT m FROM VocabularyList m WHERE m.userId =:userId " , VocabularyList.class)
-                .setParameter("userId", userId)
-//                .setFirstResult(num)
-//                .setMaxResults(1)
+        return em.createQuery("SELECT m FROM VocabularyList m " , VocabularyList.class)
+
+                .setFirstResult(num)
+                .setMaxResults(5)
                 .getResultList();
     }
 }

@@ -17,19 +17,18 @@ public class VocabularyList {
     @Column
     private  Long id;
 
-    @Column
-    private String userId;
-    @Column
-    private String myVoca;
 
     @Column
-    private String myExplain;
+    private String voca;
+
+    @Column
+    private String explain;
 
     @Builder
-    public  VocabularyList(String userId,String myVoca,String myExplain){
-        this.userId = userId;
-        this.myVoca = myVoca;
-        this.myExplain = myExplain;
+    public  VocabularyList(String voca,String explain){
+
+        this.voca = voca;
+        this.explain = explain;
     }
 
 }

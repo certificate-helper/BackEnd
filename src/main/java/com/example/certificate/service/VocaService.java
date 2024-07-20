@@ -18,8 +18,8 @@ public class VocaService {
     }
 
     @Transactional(readOnly = true)
-    public List<VocabularyList> getMyVoca(String id, int num){
-        return vocaRepository.getMyVoca(id,num);
+    public List<VocabularyList> getVoca(int num){
+        return vocaRepository.getVoca(num);
     }
     @Transactional(readOnly = true)
     public List<VocabularyList> searchTitle(String userId,String title) { return vocaRepository.searchVoca(userId,title);}

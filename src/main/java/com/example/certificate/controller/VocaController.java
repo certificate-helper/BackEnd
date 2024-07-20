@@ -22,9 +22,8 @@ public class VocaController {
         public void insertVoca( @RequestParam("voca") String voca,
                                 @RequestParam("explain") String explain){
             VocabularyList vocabularyList = VocabularyList.builder().
-                    userId("test").
-                    myVoca(voca).
-                    myExplain(explain).
+                    voca(voca).
+                    explain(explain).
                     build();
             vocaService.insertVoca(vocabularyList);
         }
@@ -46,28 +45,32 @@ public class VocaController {
 
 
             VocaDto vocaDto = VocaDto.builder().
-                    myVoca(vocabularyList.getMyVoca()).
-                    myExplain(vocabularyList.getMyExplain()).
+                    voca(vocabularyList.getVoca()).
+                    explain(vocabularyList.getExplain()).
                     build();
             return  new ResponseEntity<>(vocaDto,HttpStatus.OK);
         }
 
         @GetMapping (value = "/getVoca")
-        public ResponseEntity<List<VocaDto>> getVoca(@RequestParam("id") String id,
+        public ResponseEntity<List<VocaDto>> getVoca(
                                                      @RequestParam("page") int page) {
             // Assuming page size is 10, adjust as per your requirement
-            int pageSize = 10;
-            List<VocabularyList> vocabularyLists = vocaService.getMyVoca(id, page * pageSize);
+            int pageSize = 5;
+            List<VocabularyList> vocabularyLists = vocaService.getVoca( page * pageSize);
 
             List<VocaDto> vocaDtoList = new ArrayList<>(vocabularyLists.size());
             for(VocabularyList  vocabularyList: vocabularyLists){
+
                 VocaDto vocaDto = VocaDto.builder()
-                        .myVoca(vocabularyList.getMyVoca())
-                        .myExplain(vocabularyList.getMyExplain())
+
+                        .voca(vocabularyList.getVoca())
+                        .explain(vocabularyList.getExplain())
                         .build();
                 vocaDtoList.add(vocaDto);
             }
 
             return new ResponseEntity<>(vocaDtoList, HttpStatus.OK);
         }
+
+
 }
