@@ -1,5 +1,6 @@
 package com.example.certificate.repository;
 
+import com.example.certificate.entity.Exam;
 import com.example.certificate.entity.MyVoca;
 import com.example.certificate.entity.VocabularyList;
 import jakarta.persistence.EntityManager;
@@ -18,7 +19,15 @@ public class MyVocaRepository {
                 .setParameter("voca", voca)
                 .getResultList();
     }
+
+    public List<MyVoca> setQuiz (String userId){
+        return em.createQuery("SELECT m FROM MyVoca m WHERE  m.userId =:userId ORDER BY RAND()"  , MyVoca.class)
+                .setParameter("userId", userId)
+                .getResultList();
+    }
+
     public void saveMyVoca(MyVoca myVoca){
         em.persist(myVoca);
     }
+    public void setExam(Exam exam) {em.persist(exam);}
 }

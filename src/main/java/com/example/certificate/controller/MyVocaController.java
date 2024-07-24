@@ -25,6 +25,9 @@ public class MyVocaController {
         //단어로 기본키 찾음
         myVocaService.saveMyVoca(id,voca);
     }
-
+    @PostMapping(value  = "/setQuiz") //단어 퀴즈 세팅 컨트롤러
+    public void setQuiz(@RequestParam("id") String id){
+        myVocaService.setQuiz(id);
+    }
 
 }
