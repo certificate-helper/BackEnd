@@ -9,13 +9,17 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ProblemDto {
+public class ExamDto {
 
     @Column
     private String problem;
 
+    @Column
+    private String examNum;
+
     @Builder
-    public ProblemDto(String problem){
+    public ExamDto(String problem,String examNum){
         this.problem = problem;
+        this.examNum = examNum;
     }
 }
