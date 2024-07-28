@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Vocabulary Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .voca-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .voca-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .pagination {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="voca-container">
+    <h2>Vocabulary Viewer</h2>
+    <div id="vocaList">
+        <!-- Vocabulary items will be displayed here dynamically -->
+    </div>
+    <div class="pagination">
+        <button id="prevBtn" onclick="loadPrevious()">Previous</button>
+        <button id="nextBtn" onclick="loadNext()">Next</button>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    var currentPage = 0; // Start with the first page
+
+    $(document).ready(function() {
+        loadVocabulary(currentPage);
+    });
+
+    function loadVocabulary(page) {
+        $.ajax({
+            type: "GET",
+            url: "/getVoca?id=test&page=" + page,
+            success: function(response) {
+                displayVocabulary(response);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error fetching vocabulary list: ", error);
+            }
+        });
+    }
+
+    function displayVocabulary(vocaDtoList) {
+        var vocaListDiv = $('#vocaList');
+        vocaListDiv.empty(); // Clear previous content
+
+        if (vocaDtoList.length === 0) {
+            vocaListDiv.append('<p>No vocabulary items found.</p>');
+        } else {
+            vocaDtoList.forEach(function(vocaDto) {
+                var isChecked = vocaDto.myVoca !== "null" ? "checked" : "";
+                var vocaItem = '<div class="voca-item">' +
+                               '<div>' +
+                               '<p><strong>Vocabulary:</strong> ' + vocaDto.voca + '</p>' +
+                               '<p><strong>Explanation:</strong> ' + vocaDto.explain + '</p>' +
+                               '</div>' +
+                               '<div>' +
+                               '<input type="checkbox" class="voca-checkbox" data-voca="' + vocaDto.voca + '" ' + isChecked + '>' +
+                               '</div>' +
+                               '</div>';
+                vocaListDiv.append(vocaItem);
+            });
+
+            // Attach event listener for the checkboxes
+            $('.voca-checkbox').on('change', function() {
+                var voca = $(this).data('voca');
+                if (this.checked) {
+                    saveMyVoca(voca);
+                }
+            });
+        }
+    }
+
+    function saveMyVoca(voca) {
+        $.ajax({
+            type: "POST",
+            url: "/saveMyVoca",
+            data: { id: "test",
+                    voca: voca },
+            success: function(response) {
+                console.log("Vocabulary saved: " + voca);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error saving vocabulary: ", error);
+            }
+        });
+    }
+
+    function loadNext() {
+        currentPage++;
+        loadVocabulary(currentPage);
+    }
+
+    function loadPrevious() {
+        if (currentPage > 0) {
+            currentPage--;
+            loadVocabulary(currentPage);
+        }
+    }
+</script>
+</body>
+</html>
