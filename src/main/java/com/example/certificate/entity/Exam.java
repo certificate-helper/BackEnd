@@ -20,8 +20,11 @@ public class Exam {
     private UserTest userTest;
 
 
-    @Column
-    private  Long testId;
+    @ManyToOne
+    @JoinColumn
+    private VocabularyList vocabularyList;
+
+
 
     @Column
     private int examNum; // 문제 번호
@@ -29,10 +32,14 @@ public class Exam {
     @Column
     private int state; // 문제의 상태를 기록 (안 푼 문제는 0, 맞은 문제는 1, 틀린 문제는 -1)
 
+    public void updateAnswerCheck(int state) {
+        this.state = state;
+    }
+
     @Builder
-    public Exam(UserTest userTest,Long testId,int examNum, int state) {
+    public Exam(UserTest userTest,VocabularyList vocabularyList,int examNum, int state) {
         this.userTest = userTest;
-        this.testId = testId;
+        this.vocabularyList = vocabularyList;
         this.examNum = examNum;
         this.state = state;
     }
