@@ -1,5 +1,6 @@
 package com.example.certificate.repository;
 
+import com.example.certificate.entity.Exam;
 import com.example.certificate.entity.Test;
 import com.example.certificate.entity.VocabularyList;
 import jakarta.persistence.EntityManager;
@@ -17,16 +18,14 @@ public class VocaRepository {
     }
 
 
-    public List<VocabularyList> searchVoca(String userId,String myVoca){
-        return em.createQuery("SELECT m FROM VocabularyList m WHERE m.userId =:userId and m.myVoca =:myVoca"  , VocabularyList.class)
-                .setParameter("userId", userId)
-                .setParameter("myVoca", myVoca)
+    public List<VocabularyList> searchVoca(String voca){
+        return em.createQuery("SELECT m FROM VocabularyList m WHERE  m.voca =:voca"  , VocabularyList.class)
+                .setParameter("voca", voca)
                 .getResultList();
     }
     public List<VocabularyList> getVoca(int num){
 
         return em.createQuery("SELECT m FROM VocabularyList m " , VocabularyList.class)
-
                 .setFirstResult(num)
                 .setMaxResults(5)
                 .getResultList();

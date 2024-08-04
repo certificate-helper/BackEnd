@@ -23,16 +23,16 @@ public class VocaController {
                                 @RequestParam("explain") String explain){
             VocabularyList vocabularyList = VocabularyList.builder().
                     voca(voca).
-                    explain(explain).
+                    vocaExplain(explain).
                     build();
             vocaService.insertVoca(vocabularyList);
         }
         @GetMapping (value = "/searchVoca")  //단어 제목으로 검색하는 컨트롤러
-        public  ResponseEntity<VocaDto> searchVoca(@RequestParam("id") String id,
+        public  ResponseEntity<VocaDto> searchVoca(
                                                    @RequestParam("title") String title){
             VocabularyList vocabularyList = null;
             try {
-                List<VocabularyList> results = vocaService.searchTitle(id, title);
+                List<VocabularyList> results = vocaService.searchTitle( title);
                 if (results.isEmpty()) {
                     // 검색 결과가 없는 경우
                     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -43,32 +43,21 @@ public class VocaController {
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
 
-
+            System.out.println("검색한 단어: "+ vocabularyList.getVoca());
             VocaDto vocaDto = VocaDto.builder().
                     voca(vocabularyList.getVoca()).
-                    explain(vocabularyList.getExplain()).
+                    explain(vocabularyList.getVocaExplain()).
                     build();
             return  new ResponseEntity<>(vocaDto,HttpStatus.OK);
         }
 
         @GetMapping (value = "/getVoca")
         public ResponseEntity<List<VocaDto>> getVoca(
-                                                     @RequestParam("page") int page) {
-            // Assuming page size is 10, adjust as per your requirement
+                @RequestParam("id") String id,
+                @RequestParam("page") int page) {
+            // 한 페이지에 5개씩
             int pageSize = 5;
-            List<VocabularyList> vocabularyLists = vocaService.getVoca( page * pageSize);
-
-            List<VocaDto> vocaDtoList = new ArrayList<>(vocabularyLists.size());
-            for(VocabularyList  vocabularyList: vocabularyLists){
-
-                VocaDto vocaDto = VocaDto.builder()
-
-                        .voca(vocabularyList.getVoca())
-                        .explain(vocabularyList.getExplain())
-                        .build();
-                vocaDtoList.add(vocaDto);
-            }
-
+            List<VocaDto> vocaDtoList = vocaService.getVoca( id,page * pageSize);
             return new ResponseEntity<>(vocaDtoList, HttpStatus.OK);
         }
 

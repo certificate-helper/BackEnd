@@ -22,13 +22,13 @@ public class VocabularyList {
     private String voca;
 
     @Column
-    private String explain;
+    private String vocaExplain;
 
     @Builder
-    public  VocabularyList(String voca,String explain){
+    public  VocabularyList(String voca,String vocaExplain){
 
         this.voca = voca;
-        this.explain = explain;
+        this.vocaExplain = vocaExplain;
     }
 
 }
