@@ -18,7 +18,7 @@ public class OpenAIConfig {
         //ClientHttpRequestInterceptor 인터페이스를 람다식으로 구현.
         //excution은 ClientHttpRequestExecution 객체로, 요청을 실행시키는 execute 메소드 포함.
         restTemplate.getInterceptors().add((request, body, execution) -> {
-            System.out.println("openaiApiKey: "+openaiApiKey);
+
             //요청 헤더에 다음을 추가한 후 request를 보냄.
             request.getHeaders().add("Authorization", "Bearer " + openaiApiKey);
             return execution.execute(request, body);

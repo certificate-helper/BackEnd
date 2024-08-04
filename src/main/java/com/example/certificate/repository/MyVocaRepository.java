@@ -1,9 +1,6 @@
 package com.example.certificate.repository;
 
-import com.example.certificate.entity.Exam;
-import com.example.certificate.entity.MyVoca;
-import com.example.certificate.entity.UserTest;
-import com.example.certificate.entity.VocabularyList;
+import com.example.certificate.entity.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +24,12 @@ public class MyVocaRepository {
                 .setParameter("userId", userId)
                 .getResultList();
     }
+    public  List<Exam> wrongAnswer(String userId){
+        String jpql = "SELECT e FROM Exam e WHERE e.userTest.userId = :userId and e.state = -1";
+        TypedQuery<Exam> query = em.createQuery(jpql, Exam.class);
+        query.setParameter("userId", userId);
+        return query.getResultList();
+    }
     public List<Exam> getAllExam(String userId){
         String jpql = "SELECT e FROM Exam e WHERE e.userTest.userId = :userId";
         TypedQuery<Exam> query = em.createQuery(jpql, Exam.class);
@@ -43,8 +46,9 @@ public class MyVocaRepository {
     }
     public void saveMyVoca(MyVoca myVoca){
         em.persist(myVoca);
-    }
+    }//내 단어장에 추가
     public void setExam(Exam exam) {em.persist(exam);}
     public  void setUserTest(UserTest userTest) {em.persist(userTest);}
+    public void saveWrongAnswer(WrongAnswer wrongAnswer) {em.persist(wrongAnswer);}
     //public void doQuiz(id,)
 }

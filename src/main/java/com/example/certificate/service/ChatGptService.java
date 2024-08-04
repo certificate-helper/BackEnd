@@ -5,6 +5,7 @@ package com.example.certificate.service;
 import com.example.certificate.dto.ChatRequest;
 import com.example.certificate.dto.ChatResponse;
 import com.example.certificate.dto.Message;
+import com.example.certificate.entity.WrongAnswer;
 import io.github.flashvayne.chatgpt.service.ChatgptService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,11 +36,7 @@ public class ChatGptService {
 
     public String chat(String prompt){
         ChatRequest request = new ChatRequest(chatModel, prompt);
-//        request.getMessages().add(new Message(
-//                "system",
-//                "You are a useful assistant who tells the user of cooking recipes that can be made with inputted ingredients."
-//                        + " Just write a text without any character role."
-//                        + " And write it in Korean."));
+
 
         try {
             ChatResponse response  = template.postForObject(chatApiURL, request, ChatResponse.class);
@@ -49,43 +46,13 @@ public class ChatGptService {
         }
         return "w";
     }
-    public void recommend(String voca,String answer,String userInput){
+    public String recommend(String voca,String answer,String userInput){
         String answerPrompt ="나는 서술형 주관식 문제에서 " +
                 "사용자가 입력한 정답의 여부를 너에게 판단시키고 싶어." +
                 voca+ "이란 용어 대한 올바른 설명은 "+answer+"야."+
                 "사용자가 입력한 서술형 답안은 "+userInput+"만약 너가 판단했을 때 맞으면 '정답!'이라고 말해주고 틀렸으면 '오답!'이라고" +
                 "말해주고 틀린이유 또한 뒤에 설명해줘." +"반든시 맨처음 단어는 정답! 또는 오답!으로 시작해야하고 오답! 일 경우 틀린 이유까지 서술해줘야해"
                 ;
-        //String[] answerChat = chat(answerPrompt).split("!");
-        System.out.println(chat(answerPrompt));
-//        //재료 문자열 처리
-//        StringBuilder sb = new StringBuilder();
-//
-//        for(String str : ingredients){
-//            sb.append(str);
-//
-//            //마지막 재료는 콤마 생략
-//            if(str != ingredients.get(ingredients.size()-1))
-//                sb.append(", ");
-//        }
-//        String strIngredient = sb.toString();
-//
-//        //음식 이름&재료 얻기
-//        String prompt = "재료: " + strIngredient + "\n이 재료들을 포함해서 만들 수 있는 요리 이름을 딱 한 가지 말해줘. 모든 재료를 사용하지 않아도 괜찮아. [ouput] 요리 이름 다음에 콜론(:)을 붙여줘 [ouput] 그 요리에 필요한 재료들을 콤마(,)로 구분해서 알려줘.\n"
-//                + " 예를 들어줄게, \"볶음밥: 파, 밥, 마늘, 양파, 당근, 양배추\". 이 양식에 맞춰 출력해줘. 내가 지정한 형식으로만 출력하고 다른 건 아무것도 출력하지마.";
-//        String[] result = chat(prompt).split(":"); //result[0] : "요리 이름", result[1] : "재료1, 재료2, 재료3, ... "
-//        String foodName = result[0];
-//        List<String> foodIngredients = new ArrayList<>();
-//        for(String ingredient : result[1].split(",")){
-//            foodIngredients.add(ingredient.trim());
-//        }
-//
-//        //레시피 얻기
-//        String recipePrompt = "자 이제 " + foodName + " 레시피를 알려줘. 가지고 있는 재료는 " + result[1] + "이야. 레시피를 알려줄 때는 최대한 자세하게 알려줘. 만드는 순서에 따라 문장 앞에 번호를 붙여 출력해줘. [ouput] 그리고 마지막 문장은 \"맛있게 드세요!\"로 출력을 마무리 해줘."
-//                + "예를 들어줄게, \"1.마늘을 다지고 파를 썰어준다 2.계란을 후라이팬에 반쯤 익히고 다진 마늘과 썬 파를 넣는다 3.진간장을 3숟갈 계란 후라이에 넣는다 4.맛있게 드세요!\". 이 양식에 맞춰 출력해줘. 내가 지정한 형식으로만 출력하고 다른 문장은 절대 출력하지마.";
-//        String[] recipeArr = chat(recipePrompt).split("\n");
-//        List<String> recipe = Arrays.asList(recipeArr);
-//        System.out.println(recipe);
-
+        return chat(answerPrompt);
     }
 }

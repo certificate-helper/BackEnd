@@ -19,14 +19,19 @@ public class WrongAnswer {
     @Column
     private String userId;
 
+
     @Column
-    private Long testId;
+    private String problem;  //문제
+
+    @Column
+    private String commentary; //오답에 대한 해설
 
     
     @Builder
-    public  WrongAnswer(String userId,Long testId){
+    public  WrongAnswer(String userId,String problem,String commentary){
         this.userId = userId;
-        this.testId = testId;
+        this.problem = problem;
+        this.commentary = commentary;
     }
 
 }
