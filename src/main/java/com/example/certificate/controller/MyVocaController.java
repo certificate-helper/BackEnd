@@ -2,8 +2,10 @@ package com.example.certificate.controller;
 
 
 import com.example.certificate.dto.ExamDto;
+import com.example.certificate.dto.VocaDto;
 import com.example.certificate.entity.Exam;
 import com.example.certificate.entity.MyVoca;
+import com.example.certificate.service.ChatGptService;
 import com.example.certificate.service.MyVocaService;
 import com.example.certificate.service.VocaService;
 import lombok.RequiredArgsConstructor;
@@ -19,12 +21,18 @@ import java.util.Map;
 public class MyVocaController {
     private final MyVocaService myVocaService;
     private final VocaService vocaService;
-    @PostMapping (value = "/saveMyVoca")
+
+    @PostMapping (value = "/saveMyVoca")  //내 단어장에 저장하는 컨트롤러
     public void saveMyVoca(@RequestParam("id") String id,
                            @RequestParam("voca") String voca){
 
         //단어로 기본키 찾음
         myVocaService.saveMyVoca(id,voca);
+    }
+    @PostMapping(value = "/remove-my-voca")
+    public void removeMyVoca(@RequestParam("id") String id,
+                            @RequestParam("voca") String voca){
+        myVocaService.removeMyVoca(id,voca);
     }
    // @PostMapping(value  = "/setQuiz") //단어 퀴즈 세팅 컨트롤러
     @PostMapping(value = "/setQuiz", consumes = "application/json", produces = "application/json")
@@ -42,6 +50,7 @@ public class MyVocaController {
     @GetMapping (value = "/doQuiz") // 프론트쪽에서 번호를 누를 때마다 한문제씩 전달
     public ResponseEntity<ExamDto> doQuiz(@RequestParam("id") String id,
                                           @RequestParam("num") String num){
+        System.out.println("num: "+num);
         ExamDto examDto = myVocaService.doQuiz(id,num);
         return new ResponseEntity<>(examDto, HttpStatus.OK);
     }
@@ -50,7 +59,12 @@ public class MyVocaController {
     public void checkAnswer(@RequestParam("id") String id,
                             @RequestParam("voca") String voca,
                              @RequestParam("num") String num ){
-        myVocaService.checkAnswer(id,voca,num);
 
+                myVocaService.checkAnswer(id,voca,num);
+    }
+    @GetMapping  (value = "/wrongQuiz")
+    public  List<VocaDto> wrongQuiz(@RequestParam("id") String id){
+
+        return  myVocaService.wrongAnswer(id);
     }
 }
