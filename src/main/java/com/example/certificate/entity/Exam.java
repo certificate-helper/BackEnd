@@ -25,7 +25,6 @@ public class Exam {
     private VocabularyList vocabularyList;
 
 
-
     @Column
     private int examNum; // 문제 번호
 

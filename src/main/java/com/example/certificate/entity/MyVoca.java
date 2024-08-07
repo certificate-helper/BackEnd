@@ -21,6 +21,14 @@ public class MyVoca { //내 단어장
     @Column
     private String  voca;
 
+    @Column
+    private int examNum ; // 문제 번호
+
+
+
+    public void setExamNum(int examNum ){
+        this.examNum = examNum;
+    }
     @Builder
     public MyVoca(String userId,String voca){
         this.userId = userId;

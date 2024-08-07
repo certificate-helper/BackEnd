@@ -20,8 +20,16 @@ public class MyVocaRepository {
     }
 
     public List<MyVoca> setQuiz (String userId){
+        System.out.println("setQuiz: "+ userId);
         return em.createQuery("SELECT m FROM MyVoca m WHERE  m.userId =:userId ORDER BY RAND()"  , MyVoca.class)
                 .setParameter("userId", userId)
+                .getResultList();
+    }
+
+    public List<MyVoca> doMyVocaQuiz(String userId,int examNum){
+        return em.createQuery("SELECT m FROM MyVoca m WHERE  m.userId =:userId and m.examNum =:examNum"  , MyVoca.class)
+                .setParameter("userId", userId)
+                .setParameter("examNum",examNum)
                 .getResultList();
     }
     public  List<Exam> wrongAnswer(String userId){

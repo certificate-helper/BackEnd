@@ -3,6 +3,7 @@ package com.example.certificate.controller;
 
 import com.example.certificate.dto.ExamDto;
 import com.example.certificate.dto.VocaDto;
+import com.example.certificate.dto.WrongAnswerDto;
 import com.example.certificate.entity.Exam;
 import com.example.certificate.entity.MyVoca;
 import com.example.certificate.service.ChatGptService;
@@ -63,8 +64,7 @@ public class MyVocaController {
                 myVocaService.checkAnswer(id,voca,num);
     }
     @GetMapping  (value = "/wrongQuiz")
-    public  List<VocaDto> wrongQuiz(@RequestParam("id") String id){
-
+    public  List<WrongAnswerDto> wrongQuiz(@RequestParam("id") String id){
         return  myVocaService.wrongAnswer(id);
     }
 }

@@ -24,7 +24,7 @@ public class UserTest {
     private String userId;
 
 
-
+    @Column
     private LocalDate testDate; // 시험친 날짜
 
     @Builder

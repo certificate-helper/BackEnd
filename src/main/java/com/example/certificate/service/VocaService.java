@@ -50,6 +50,7 @@ public class VocaService {
     public   List<VocaDto>getAllVoca(String id){
         List<VocaDto> vocaDtoList = new ArrayList<>();
         List<VocabularyList> vocabularyLists = vocaRepository.getAllVoca();
+        int num = 1;
         for(VocabularyList vocabularyList:vocabularyLists){
             boolean myVoca = false;
             List<MyVoca> myVocaList = myVocaRepository.getMyVoca(id,vocabularyList.getVoca());
@@ -57,6 +58,7 @@ public class VocaService {
                 myVoca = true;
             }
             VocaDto vocaDto = com.example.certificate.dto.VocaDto.builder()
+                    .num(num++)
                     .selected(myVoca)
                     .voca(vocabularyList.getVoca())
                     .explain(vocabularyList.getVocaExplain())
