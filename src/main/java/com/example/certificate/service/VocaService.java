@@ -34,7 +34,7 @@ public class VocaService {
                 myVoca = true;
             }
             VocaDto vocaDto = com.example.certificate.dto.VocaDto.builder()
-                    .myVoca(myVoca)
+                    .selected(myVoca)
                     .voca(voca)
                     .explain(vocabularyList.getVocaExplain())
                     .build();
@@ -47,7 +47,24 @@ public class VocaService {
     public List<VocabularyList> searchTitle(String title) { return vocaRepository.searchVoca(title);}
 
 
-    public   List<VocabularyList>getAllVoca(){return vocaRepository.getAllVoca();}
+    public   List<VocaDto>getAllVoca(String id){
+        List<VocaDto> vocaDtoList = new ArrayList<>();
+        List<VocabularyList> vocabularyLists = vocaRepository.getAllVoca();
+        for(VocabularyList vocabularyList:vocabularyLists){
+            boolean myVoca = false;
+            List<MyVoca> myVocaList = myVocaRepository.getMyVoca(id,vocabularyList.getVoca());
+            if(!myVocaList.isEmpty()){ //내가 북마크 한 단어이면
+                myVoca = true;
+            }
+            VocaDto vocaDto = com.example.certificate.dto.VocaDto.builder()
+                    .selected(myVoca)
+                    .voca(vocabularyList.getVoca())
+                    .explain(vocabularyList.getVocaExplain())
+                    .build();
+            vocaDtoList.add(vocaDto);
+        }
+        return vocaDtoList;
+    }
 
 }
 
