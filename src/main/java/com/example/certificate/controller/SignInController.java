@@ -24,6 +24,7 @@ public class SignInController {
 
         @GetMapping(value = "/checkId")  //중복된 아이디가 존재하는지 검사
         public   ResponseEntity<String> checkId(@RequestParam("id") String id){
+            System.out.println("id: "+ id);
             List<User> user = signInService.checkId(id);
             if(user.size() != 0){  //중복된 아이디가 있으면
                 return new ResponseEntity<>("no", HttpStatus.OK);
@@ -31,12 +32,13 @@ public class SignInController {
             return new ResponseEntity<>("ok", HttpStatus.OK);
         }
 
-        @PostMapping(value = "/signUp") //회원가입
+
+    @PostMapping(value = "/signUp") //회원가입
         public ResponseEntity<String> signUp(@RequestParam("id") String id,
                                             @RequestParam("pass") String pass
-                                            ///,@RequestParam("test") List<String> test
         )
         {
+            System.out.println("id: "+ id);
             try {
                 signInService.registUser(id,pass);
             }catch (Exception e){
@@ -49,6 +51,7 @@ public class SignInController {
     public   ResponseEntity<String> signIn(@RequestParam("id") String id,
                                            @RequestParam("pass") String pass,
                                            HttpServletRequest request){
+            System.out.println("id: "+ id);
         List<User> user = signInService.logIn(id,pass);
         if(user.size() != 0){
             HttpSession session = request.getSession();
@@ -57,5 +60,9 @@ public class SignInController {
         }
         return new ResponseEntity<>("no", HttpStatus.OK);
 
+    }
+    @GetMapping(value = "/qqqq")
+    public String asd(){
+            return "a";
     }
 }

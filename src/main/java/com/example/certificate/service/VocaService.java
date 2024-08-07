@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class VocaService {
     private final VocaRepository vocaRepository;
@@ -22,16 +22,16 @@ public class VocaService {
         vocaRepository.insertVoca(vocabularyList);
     }
 
-    @Transactional(readOnly = true)
+
     public List<VocaDto> getVoca(String id,int num){
         List<VocabularyList> vocabularyLists = vocaRepository.getVoca(num);
         List<VocaDto> vocaDtoList = new ArrayList<>(vocabularyLists.size());
         for(VocabularyList  vocabularyList: vocabularyLists){
             String voca = vocabularyList.getVoca();
-            String myVoca = "null";
+            boolean myVoca = false;
             List<MyVoca> myVocaList = myVocaRepository.getMyVoca(id,voca);
             if(!myVocaList.isEmpty()){ //내가 북마크 한 단어이면
-                myVoca = myVocaList.get(0).getVoca();
+                myVoca = true;
             }
             VocaDto vocaDto = com.example.certificate.dto.VocaDto.builder()
                     .myVoca(myVoca)
@@ -43,8 +43,11 @@ public class VocaService {
 
         return vocaDtoList;
     }
-    @Transactional(readOnly = true)
+
     public List<VocabularyList> searchTitle(String title) { return vocaRepository.searchVoca(title);}
+
+
+    public   List<VocabularyList>getAllVoca(){return vocaRepository.getAllVoca();}
 
 }
 

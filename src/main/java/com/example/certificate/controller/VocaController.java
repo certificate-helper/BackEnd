@@ -30,7 +30,9 @@ public class VocaController {
         @GetMapping (value = "/searchVoca")  //단어 제목으로 검색하는 컨트롤러
         public  ResponseEntity<VocaDto> searchVoca(
                                                    @RequestParam("title") String title){
+
             VocabularyList vocabularyList = null;
+            long beforeTime = System.currentTimeMillis();
             try {
                 List<VocabularyList> results = vocaService.searchTitle( title);
                 if (results.isEmpty()) {
@@ -42,7 +44,9 @@ public class VocaController {
                 // 예외가 발생한 경우
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
-
+            long afterTime = System.currentTimeMillis(); // 코드 실행 후에 시간 받아오기
+            long secDiffTime = (afterTime - beforeTime); //두 시간에 차 계산
+            System.out.println("시간차이(m) : "+secDiffTime);
             System.out.println("검색한 단어: "+ vocabularyList.getVoca());
             VocaDto vocaDto = VocaDto.builder().
                     voca(vocabularyList.getVoca()).
@@ -59,6 +63,15 @@ public class VocaController {
             int pageSize = 5;
             List<VocaDto> vocaDtoList = vocaService.getVoca( id,page * pageSize);
             return new ResponseEntity<>(vocaDtoList, HttpStatus.OK);
+        }
+
+        @GetMapping (value = "/getAllVoca")
+        public  void getAllVoca(){
+            long beforeTime = System.currentTimeMillis();
+            vocaService.getAllVoca();
+            long afterTime = System.currentTimeMillis(); // 코드 실행 후에 시간 받아오기
+            long secDiffTime = (afterTime - beforeTime); //두 시간에 차 계산
+            System.out.println("시간차이(m) : "+secDiffTime);
         }
 
 

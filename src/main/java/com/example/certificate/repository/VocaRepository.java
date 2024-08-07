@@ -23,11 +23,14 @@ public class VocaRepository {
                 .setParameter("voca", voca)
                 .getResultList();
     }
-    public List<VocabularyList> getVoca(int num){
-
+    public List<VocabularyList> getVoca(int num){ //단어를 5개씩 불러오기
         return em.createQuery("SELECT m FROM VocabularyList m " , VocabularyList.class)
                 .setFirstResult(num)
                 .setMaxResults(5)
+                .getResultList();
+    }
+    public List<VocabularyList> getAllVoca(){   //모든 단어 불러오기
+        return em.createQuery("SELECT m FROM VocabularyList m " , VocabularyList.class)
                 .getResultList();
     }
 }

@@ -17,10 +17,10 @@ public class VocaDto {
     private String explain;
 
     @Column
-    private String myVoca;
+    private boolean myVoca;
 
     @Builder
-    public  VocaDto(String voca,String explain,String myVoca){
+    public  VocaDto(String voca,String explain,boolean myVoca){
         this.voca = voca;
         this.explain = explain;
         this.myVoca = myVoca ;
