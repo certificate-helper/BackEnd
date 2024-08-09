@@ -27,14 +27,23 @@ public class Test {
     @Column
     private String answer ; //정답
 
+    @Column //단답형은 short,서술형은 long,순서문제는 order
+    private String type; //문제 유형(단답형,서술형,순서문제 등등)
+
     @Column
-    private String type; //문제 유형
+    private String category; //시험문제 단원 종류(sql,프로그래밍언어,보안 등등)
+    @Column
+    private String imageUrl; //시험문제 이미지 저장주소
+    public void saveImageUrl(String imageUrl){this.imageUrl = imageUrl;}
+
     @Builder
-    public Test(int year, int round, String problem, String answer, String type) {
+    public Test(int year, int round, String problem, String answer, String type,String category) {
         this.year = year;
         this.round =round;
         this.problem = problem;
         this.answer = answer;
         this.type = type;
+        this.category = category;
+        this.imageUrl = "null";
     }
 }
