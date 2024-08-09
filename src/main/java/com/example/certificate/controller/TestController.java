@@ -51,31 +51,29 @@ public class TestController {
                         build();
         return userTest;
     }
-    @PostMapping (value = "/setExam")  //  시험을 치기전 세팅을 해주는 controller
+    @PostMapping (value = "/insertTest")
+    public  void insertTest(){
+
+    }
+    @PostMapping (value = "/set-exam")  //  시험을 치기전 세팅을 해주는 컨트롤러
     public void setExam(@RequestParam("year") String year,
                         @RequestParam("round") String round,
-                        @RequestParam("userId") String userId
+                        @RequestParam("id") String id
                          ) {
-        List<Test> tests = testService.getExam(year, round);  //시험 문제를 가져옴
-        int num = 1; //문제 번호
-        UserTest userTest = getUserTest(userId);
-        for (Test test:tests){
-            Exam exam = Exam.builder().
-                    userTest(userTest).
-                    //testId(test.getId()). //문제 아이디
-                    examNum(num++).
-                    state(0).
-            build();
-            testService.setExam(exam);
-        }
+         testService.setExam(id,year, round);  //시험 문제를 가져옴
     }
 
-
-    @GetMapping ("/getExam")
-    public ResponseEntity<ExamDto> getExam(@RequestParam("userId") String userId,
+    @GetMapping ("/do-exam") //시험을 문제를 제공하는 컨트롤러
+    public ResponseEntity<ExamDto> getExam(@RequestParam("id") String id,
                                            @RequestParam("num") String num){
         ExamDto examDto = ExamDto.builder().build();
         return new ResponseEntity<>(examDto, HttpStatus.OK);
     }
+    @PostMapping (value="/check-exam-answer") //기출문제 정답을 확인하는 컨트롤러
+    public void checkExamAnswer(@RequestParam("id") String id,
+                            @RequestParam("problem") String voca,
+                            @RequestParam("num") String num ){
 
+
+    }
 }
