@@ -20,11 +20,11 @@ public class ExamLog {
     private String userId;
 
     @Column
-    private int examData ;
+    private int examDate ;
 
     @Builder
-    public ExamLog(String userId,int examData){
+    public ExamLog(String userId,int examDate){
         this.userId = userId;
-        this.examData = examData;
+        this.examDate = examDate;
     }
 }

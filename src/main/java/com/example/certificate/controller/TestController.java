@@ -66,14 +66,13 @@ public class TestController {
     @GetMapping ("/do-exam") //시험을 문제를 제공하는 컨트롤러
     public ResponseEntity<ExamDto> getExam(@RequestParam("id") String id,
                                            @RequestParam("num") String num){
-        ExamDto examDto = ExamDto.builder().build();
+        ExamDto examDto = testService.getExam(id,num);
         return new ResponseEntity<>(examDto, HttpStatus.OK);
     }
     @PostMapping (value="/check-exam-answer") //기출문제 정답을 확인하는 컨트롤러
     public void checkExamAnswer(@RequestParam("id") String id,
-                            @RequestParam("problem") String voca,
+                            @RequestParam("answer") String answer,
                             @RequestParam("num") String num ){
-
 
     }
 }

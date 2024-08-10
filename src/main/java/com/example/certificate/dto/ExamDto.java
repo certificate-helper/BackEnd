@@ -19,15 +19,14 @@ public class ExamDto {
     private String examNum;
 
     @Column
-    private  String type; //시험문제 유형(단답형은 short,서술형은 long,순서문제는 order)
-
+    private  boolean isImage; //이미지가 존재하는 문제인지 (false이면 이미지가 없고 true이면 이미지 존재)
     @Column
     private byte[] imageData; //시험문제 이미지
     @Builder
-    public ExamDto(String problem,String examNum,String type,byte[] imageData){
+    public ExamDto(String problem,String examNum,boolean isImage,byte[] imageData){
         this.problem = problem;
         this.examNum = examNum;
-        this.type = type;
+        this.isImage = isImage;
         this.imageData = imageData;
     }
 }
