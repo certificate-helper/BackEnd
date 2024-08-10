@@ -49,7 +49,7 @@ public class Exam {
         this.state = "?";
         this.type = type;
         this.category = category;
-        this.imageUrl = imageUrl;
+        this.imageUrl = imageUrl; //이미지가 없으면 문자열 null
     }
 }
 
