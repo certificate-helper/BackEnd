@@ -5,6 +5,9 @@ import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class ImageLoader {
     private String imageUrl;
@@ -12,12 +15,9 @@ public class ImageLoader {
         this.imageUrl = imageUrl;
     }
     public byte[] loadImage() throws IOException {
+        System.out.println("이미지 url: "+ imageUrl);
         // 리소스 파일을 불러옵니다.
-        ClassPathResource imgFile = new ClassPathResource(imageUrl);
-
-        // InputStream으로 파일을 읽어와 byte[]로 변환합니다.
-        try (InputStream inputStream = imgFile.getInputStream()) {
-            return StreamUtils.copyToByteArray(inputStream);
-        }
+        Path path = Paths.get(imageUrl);
+        return Files.readAllBytes(path);
     }
 }
