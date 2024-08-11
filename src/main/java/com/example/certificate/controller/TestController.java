@@ -1,6 +1,7 @@
 package com.example.certificate.controller;
 
 import com.example.certificate.dto.ExamDto;
+import com.example.certificate.dto.WrongAnswerDto;
 import com.example.certificate.entity.Exam;
 import com.example.certificate.entity.Test;
 import com.example.certificate.entity.UserTest;
@@ -11,14 +12,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -63,24 +62,25 @@ public class TestController {
                             ){
             testService.insertTest(year,round,type,problem,answer,category,image);
     }
-    @PostMapping (value = "/set-exam")  //  시험을 치기전 세팅을 해주는 컨트롤러
-    public void setExam(@RequestParam("year") String year,
-                        @RequestParam("round") String round,
-                        @RequestParam("id") String id
+    @PostMapping (value = "/set-exam", consumes = "application/json", produces = "application/json")  //  시험을 치기전 세팅을 해주는 컨트롤러
+    public void setExam(@RequestBody Map<String, String> requestData
                          ) {
-         testService.setExam(id,year, round);  //시험 문제를 가져옴
+         testService.setExam(requestData.get("id"),requestData.get("year"),requestData.get("round"));  //시험 문제를 가져옴
     }
 
     @GetMapping ("/do-exam") //시험을 문제를 제공하는 컨트롤러
     public ResponseEntity<ExamDto> getExam(@RequestParam("id") String id,
                                            @RequestParam("num") String num){
+        System.out.println("id: "+id+" num: "+num);
         ExamDto examDto = testService.getExam(id,num);
         return new ResponseEntity<>(examDto, HttpStatus.OK);
     }
-    @PostMapping (value="/check-exam-answer") //기출문제 정답을 확인하는 컨트롤러
-    public void checkExamAnswer(@RequestParam("id") String id,
-                            @RequestParam("answer") String answer,
-                            @RequestParam("num") String num ){
-        testService.checkExamAnswer(id,answer,num);
+    @PostMapping (value="/check-exam-answer",consumes = "application/json", produces = "application/json") //기출문제 정답을 확인하는 컨트롤러
+    public void checkExamAnswer(@RequestBody Map<String, String> requestData){
+        testService.checkExamAnswer(requestData.get("id"),requestData.get("answer"),requestData.get("num"));
     }
+
+
+//    @GetMapping(value = "wrong-exam")
+//    public ResponseEntity<WrongAnswerDto> wrongE
 }
