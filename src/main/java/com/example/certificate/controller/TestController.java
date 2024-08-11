@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -52,8 +53,15 @@ public class TestController {
         return userTest;
     }
     @PostMapping (value = "/insertTest")
-    public  void insertTest(){
-
+    public  void insertTest(@RequestParam("year") int year,
+                            @RequestParam("round") int round,
+                            @RequestParam("type") String type,
+                            @RequestParam("problem") String problem,
+                            @RequestParam("answer") String answer,
+                            @RequestParam("category") String category,
+                            @RequestParam("image") MultipartFile image
+                            ){
+            testService.insertTest(year,round,type,problem,answer,category,image);
     }
     @PostMapping (value = "/set-exam")  //  시험을 치기전 세팅을 해주는 컨트롤러
     public void setExam(@RequestParam("year") String year,
@@ -73,6 +81,6 @@ public class TestController {
     public void checkExamAnswer(@RequestParam("id") String id,
                             @RequestParam("answer") String answer,
                             @RequestParam("num") String num ){
-
+        testService.checkExamAnswer(id,answer,num);
     }
 }

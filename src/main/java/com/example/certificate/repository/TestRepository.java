@@ -18,7 +18,7 @@ public class TestRepository {
         em.persist(test);
     }
     public  void persitUserTest(UserTest userTest){em.persist(userTest);}
-
+    public void insertTest(Test test) {em.persist(test);}
 
     public void setExam(Exam exam) {em.persist(exam);}
     public List<Test> getExam(String year, String round){ //시험을 치기위해 기출문제를 순서를 섞어서 불러오기
