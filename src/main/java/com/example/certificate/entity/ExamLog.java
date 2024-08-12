@@ -20,10 +20,10 @@ public class ExamLog {
     private String userId;
 
     @Column
-    private int examDate ;
+    private Long examDate ;
 
     @Builder
-    public ExamLog(String userId,int examDate){
+    public ExamLog(String userId,Long examDate){
         this.userId = userId;
         this.examDate = examDate;
     }

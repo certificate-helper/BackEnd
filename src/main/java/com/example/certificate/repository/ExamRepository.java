@@ -4,6 +4,7 @@ package com.example.certificate.repository;
 import com.example.certificate.entity.Exam;
 import com.example.certificate.entity.ExamLog;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -29,14 +30,16 @@ public class ExamRepository {
                 .setMaxResults(1) // 가장 첫 번째 값 하나만 반환
                 .getSingleResult();
     }
-    public  Exam getRecentExam(String userId,int examNum){
-        return em.createQuery(
-                        "SELECT e FROM Exam e WHERE e.examLog = " +
-                                "(SELECT el FROM ExamLog el WHERE el.userId = :userId ORDER BY el.examDate DESC) " +
-                                "AND e.examNum = :examNum", Exam.class)
-                .setParameter("userId", userId)
-                .setParameter("examNum", examNum)
-                .setMaxResults(1)  // examNum 조건에 맞는 첫 번째 결과만 가져옴
-                .getSingleResult();
+    public  Exam getRecentExam(ExamLog examLog,int examNum){
+        return em.createQuery("SELECT e FROM Exam e WHERE e.examLog =:examLog AND e.examNum =:examNum",Exam.class).
+                setParameter("examLog",examLog).
+                setParameter("examNum",examNum).
+                getSingleResult();
+//        String jpql = "SELECT e FROM Exam e WHERE e.examLog = :examLog AND e.examNum = :examNum";
+//        TypedQuery<Exam> query = em.createQuery(jpql, Exam.class);
+//        query.setParameter("examLog", examLog);
+//        query.setParameter("examNum", examNum);
+
+        //return query.getSingleResult();
     }
 }

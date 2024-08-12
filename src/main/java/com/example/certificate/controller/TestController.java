@@ -71,16 +71,19 @@ public class TestController {
     @GetMapping ("/do-exam") //시험을 문제를 제공하는 컨트롤러
     public ResponseEntity<ExamDto> getExam(@RequestParam("id") String id,
                                            @RequestParam("num") String num){
-        System.out.println("id: "+id+" num: "+num);
+        System.out.println("do-exam. id: "+id+" num: "+num);
         ExamDto examDto = testService.getExam(id,num);
         return new ResponseEntity<>(examDto, HttpStatus.OK);
     }
     @PostMapping (value="/check-exam-answer",consumes = "application/json", produces = "application/json") //기출문제 정답을 확인하는 컨트롤러
     public void checkExamAnswer(@RequestBody Map<String, String> requestData){
+        System.out.println("check-answer. id: "+requestData.get("id")+" answer: "+requestData.get("answer")+" num: "+requestData.get("num"));
         testService.checkExamAnswer(requestData.get("id"),requestData.get("answer"),requestData.get("num"));
     }
 
 
 //    @GetMapping(value = "wrong-exam")
-//    public ResponseEntity<WrongAnswerDto> wrongE
+//    public ResponseEntity<WrongAnswerDto> wrongExam(@RequestParam("id") String id){
+//
+//    }
 }

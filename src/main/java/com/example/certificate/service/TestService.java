@@ -7,7 +7,9 @@ import com.example.certificate.dto.ExamDto;
 import com.example.certificate.entity.Exam;
 import com.example.certificate.entity.ExamLog;
 import com.example.certificate.entity.Test;
+import com.example.certificate.entity.WrongAnswer;
 import com.example.certificate.repository.ExamRepository;
+import com.example.certificate.repository.MyVocaRepository;
 import com.example.certificate.repository.TestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,7 @@ public class TestService {
     private final TestRepository testRepository;
     private final ExamRepository examRepository;
     private  final ChatGptService gptService;
+    private final MyVocaRepository myVocaRepository;
     public void insertTest(int year, int round, String type, String problem,
                            String answer, String category, MultipartFile image){
         Test test = Test.builder().
@@ -78,20 +81,23 @@ public class TestService {
     }
 
     public ExamDto getExam(String userId,String num){
-        Exam exam = examRepository.getRecentExam(userId,Integer.valueOf(num));
+
+        ExamLog examLog = examRepository.getRecentExamLog(userId);
+
+        Exam exam = examRepository.getRecentExam(examLog,Integer.valueOf(num));
         boolean isImage = false;
         if (!exam.getImageUrl().equals("null")){
             isImage = true;
         }
         ImageLoader imageLoader = new ImageLoader(exam.getImageUrl()); //이미지 불러오는 클래스
-
         byte[] imageData = null;
-        try {
-           imageData = imageLoader.loadImage(); //이미지 저장
-        }catch (Exception e){
-            System.out.println("이미지 에러: "+e);
+        if(isImage) {
+            try {
+                imageData = imageLoader.loadImage(); //이미지 저장
+            } catch (Exception e) {
+                System.out.println("이미지 에러: " + e);
+            }
         }
-
         ExamDto examDto = ExamDto.builder().
                 problem(exam.getProblem()).
                 examNum(String.valueOf(exam.getExamNum())).
@@ -101,19 +107,41 @@ public class TestService {
         return examDto;
     }
     public void checkExamAnswer(String userId, String userInput,String num){
-        Exam exam = examRepository.getRecentExam(userId,Integer.valueOf(num));
+        ExamLog exam_log = examRepository.getRecentExamLog(userId);
+        Exam exam = examRepository.getRecentExam(exam_log,Integer.valueOf(num));
         if(exam.getType().equals("long")){  //주관형 단답형일 때
             String[] answerChat = gptService.recommend(exam.getProblem(),exam.getAnswer(),userInput).split("!");
+            System.out.println("gpt 리턴값: "+answerChat);
             if(answerChat[0].equals("정답")){
                 exam.updateAnswerCheck("O");
             }else{
+
                 exam.updateAnswerCheck("X");
+                ExamLog examLog = examRepository.getRecentExamLog(userId);
+                WrongAnswer wrongAnswer = WrongAnswer.builder().
+                        examLog(examLog).
+                        userId(userId).
+                        problem(exam.getProblem()).
+                        commentary(answerChat[1]).
+                        testType("exam").
+                        build();
+                myVocaRepository.saveWrongAnswer(wrongAnswer);
             }
         }else{ // 단답형
-            if(exam.getAnswer().contains(userInput)){ //정답이면
+            if(exam.getAnswer().contains(userInput)){ //정답이면(,로 split 하는 로직 추가하기)
                 exam.updateAnswerCheck("O");
             }else{ //
                 exam.updateAnswerCheck("X");
+                ExamLog examLog = examRepository.getRecentExamLog(userId);
+                WrongAnswer wrongAnswer = WrongAnswer.builder().
+                        examLog(examLog).
+                        userId(userId).
+                        problem(exam.getProblem()).
+                        commentary(exam.getAnswer()).
+                        testType("exam").
+                        build();
+                myVocaRepository.saveWrongAnswer(wrongAnswer);
+
             }
         }
     }
