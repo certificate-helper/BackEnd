@@ -17,4 +17,14 @@ public class StatisticRepository {
                 setParameter("userId",userId).
                 getResultList();
     }
+
+    public List<Object []> getProblemFrequency(String userId){
+        return  em.createQuery(
+                        "SELECT w.problem, COUNT(w) " +
+                                "FROM WrongQuiz w " +
+                                "WHERE w.userId = :userId " +
+                                "GROUP BY w.problem", Object[].class)
+                .setParameter("userId", userId)
+                .getResultList();
+    }
 }

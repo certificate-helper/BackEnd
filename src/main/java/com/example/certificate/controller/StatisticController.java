@@ -2,11 +2,14 @@ package com.example.certificate.controller;
 
 
 import com.example.certificate.dto.AnswerRateDto;
+import com.example.certificate.dto.QuizFrequencyDto;
 import com.example.certificate.service.StatisticService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -15,8 +18,14 @@ public class StatisticController {
     private  final StatisticService statisticService;
 
     @GetMapping (value = "/get-quiz-answer-rate")
-    public AnswerRateDto getQuizAnswerRate(@RequestParam("userId") String userId){
-        return statisticService.getUserQuizLog(userId);
+    public AnswerRateDto getQuizAnswerRate(@RequestParam("id") String id){
+        return statisticService.getUserQuizLog(id);
+    }
+
+
+    @GetMapping (value = "/get-quiz-frequency")
+    public List<QuizFrequencyDto> getProblemFrequency(@RequestParam("id") String id){
+        return statisticService.getProblemFrequency(id);
     }
 
 

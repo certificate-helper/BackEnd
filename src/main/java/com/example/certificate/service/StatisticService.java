@@ -2,12 +2,14 @@ package com.example.certificate.service;
 
 
 import com.example.certificate.dto.AnswerRateDto;
+import com.example.certificate.dto.QuizFrequencyDto;
 import com.example.certificate.entity.QuizLog;
 import com.example.certificate.repository.StatisticRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Transactional
@@ -28,5 +30,21 @@ public class StatisticService {
                 answerRate(String.valueOf(wrongNum/totalNum*100)). //
                 build();
         return answerRateDto;
+    }
+
+    public List<QuizFrequencyDto> getProblemFrequency(String userId){
+        List<QuizFrequencyDto> quizFrequencyDtoList = new ArrayList<>();
+        List<Object[]> results =  statisticRepository.getProblemFrequency(userId);
+        for (Object[] result : results) {
+            String word = (String) result[0];
+            Long count = (Long) result[1];
+
+            QuizFrequencyDto quizFrequencyDto = QuizFrequencyDto.builder()
+                    .word(word)
+                    .count(String.valueOf(count))
+                    .build();
+            quizFrequencyDtoList.add(quizFrequencyDto);
+        }
+        return  quizFrequencyDtoList;
     }
 }
