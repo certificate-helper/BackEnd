@@ -26,13 +26,14 @@ public class MyVocaController {
     @PostMapping (value = "/saveMyVoca")  //내 단어장에 저장하는 컨트롤러
     public void saveMyVoca(@RequestParam("id") String id,
                            @RequestParam("voca") String voca){
-
+        System.out.println("save");
         //단어로 기본키 찾음
         myVocaService.saveMyVoca(id,voca);
     }
     @PostMapping(value = "/remove-my-voca")
     public void removeMyVoca(@RequestParam("id") String id,
                             @RequestParam("voca") String voca){
+        System.out.println("remove");
         myVocaService.removeMyVoca(id,voca);
     }
    // @PostMapping(value  = "/setQuiz") //단어 퀴즈 세팅 컨트롤러
@@ -65,6 +66,7 @@ public class MyVocaController {
     }
     @GetMapping  (value = "/wrongQuiz")
     public  List<WrongAnswerDto> wrongQuiz(@RequestParam("id") String id){
-        return  myVocaService.wrongAnswer(id);
+        return  myVocaService.wrongQuiz(id);
     }
 }
+

@@ -2,24 +2,24 @@ package com.example.certificate.entity;
 
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-
-public class WrongAnswer {
+public class WrongQuiz {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private  Long id;
 
-
     @ManyToOne
     @JoinColumn
-    private ExamLog examLog;
-
+    private QuizLog quizLog;
     @Column
     private String userId;
 
@@ -30,15 +30,12 @@ public class WrongAnswer {
     @Column
     private String commentary; //오답에 대한 해설
 
-
-    
     @Builder
-    public  WrongAnswer(ExamLog examLog,String userId,String problem,String commentary){
-        this.examLog = examLog;
+    public  WrongQuiz(QuizLog quizLog ,String userId,String problem,String commentary){
+        this.quizLog = quizLog;
         this.userId = userId;
         this.problem = problem;
         this.commentary = commentary;
 
     }
-
 }

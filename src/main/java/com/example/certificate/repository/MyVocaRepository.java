@@ -32,18 +32,18 @@ public class MyVocaRepository {
                 .setParameter("examNum",examNum)
                 .getResultList();
     }
-    public  List<Exam> wrongAnswer(String userId){
-        String jpql = "SELECT e FROM Exam e WHERE e.userTest.userId = :userId and e.state = -1";
-        TypedQuery<Exam> query = em.createQuery(jpql, Exam.class);
-        query.setParameter("userId", userId);
-        return query.getResultList();
-    }
-    public List<Exam> getAllExam(String userId){
-        String jpql = "SELECT e FROM Exam e WHERE e.userTest.userId = :userId";
-        TypedQuery<Exam> query = em.createQuery(jpql, Exam.class);
-        query.setParameter("userId", userId);
-        return query.getResultList();
-    }
+//    public  List<Exam> wrongAnswer(String userId){
+//        String jpql = "SELECT e FROM Exam e WHERE e.userTest.userId = :userId and e.state = -1";
+//        TypedQuery<Exam> query = em.createQuery(jpql, Exam.class);
+//        query.setParameter("userId", userId);
+//        return query.getResultList();
+//    }
+//    public List<Exam> getAllExam(String userId){
+//        String jpql = "SELECT e FROM Exam e WHERE e.userTest.userId = :userId";
+//        TypedQuery<Exam> query = em.createQuery(jpql, Exam.class);
+//        query.setParameter("userId", userId);
+//        return query.getResultList();
+//    }
 
     public  List<Exam> doQuiz(String userId,int examNum){
         String jpql = "SELECT e FROM Exam e WHERE e.userTest.userId = :userId and e.examNum =:examNum";
@@ -58,5 +58,6 @@ public class MyVocaRepository {
     public void setExam(Exam exam) {em.persist(exam);}
     public  void setUserTest(UserTest userTest) {em.persist(userTest);}
     public void saveWrongAnswer(WrongAnswer wrongAnswer) {em.persist(wrongAnswer);}
-    //public void doQuiz(id,)
+    public void saveQuizLog(QuizLog quizLog){em.persist(quizLog);}
+    public void saveWrongQuiz(WrongQuiz wrongQuiz) {em.persist(wrongQuiz);}
 }

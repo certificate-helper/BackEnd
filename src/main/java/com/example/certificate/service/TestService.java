@@ -123,7 +123,7 @@ public class TestService {
                         userId(userId).
                         problem(exam.getProblem()).
                         commentary(answerChat[1]).
-                        testType("exam").
+                        //testType("exam").
                         build();
                 myVocaRepository.saveWrongAnswer(wrongAnswer);
             }
@@ -138,7 +138,7 @@ public class TestService {
                         userId(userId).
                         problem(exam.getProblem()).
                         commentary(exam.getAnswer()).
-                        testType("exam").
+                        //testType("exam").
                         build();
                 myVocaRepository.saveWrongAnswer(wrongAnswer);
 

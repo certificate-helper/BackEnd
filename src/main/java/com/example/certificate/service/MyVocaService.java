@@ -1,19 +1,18 @@
 package com.example.certificate.service;
 
 
+import com.example.certificate.ConvertDate;
 import com.example.certificate.dto.ExamDto;
 import com.example.certificate.dto.VocaDto;
 import com.example.certificate.dto.WrongAnswerDto;
 import com.example.certificate.entity.*;
-import com.example.certificate.repository.DelMyVocaRepository;
-import com.example.certificate.repository.MyVocaRepository;
-import com.example.certificate.repository.VocaRepository;
-import com.example.certificate.repository.WrongAnswerRepository;
+import com.example.certificate.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +33,8 @@ public class MyVocaService {
     private final DelMyVocaRepository delMyVocaRepository;
     private final VocaRepository vocaRepository;
     private  final ChatGptService gptService;
-    private  final WrongAnswerRepository wrongAnswerRepository;
+    private  final WrongQuizRepository wrongQuizRepository;
+    private final ExamRepository examRepository;
     public void saveMyVoca(String userId,String voca){
         MyVoca myVoca = MyVoca.builder().
                 userId(userId).
@@ -45,23 +45,19 @@ public class MyVocaService {
     public void removeMyVoca(String id,String voca){
         delMyVocaRepository.deleteByUserIdAndVoca(id,voca);
     }
-    public void setQuiz(String id){
-        List<MyVoca> myVocaList =  myVocaRepository.setQuiz(id);
-//        UserTest userTest = getUserTest(id);
-//        myVocaRepository.setUserTest(userTest);
+    public void setQuiz(String userId){
+        List<MyVoca> myVocaList =  myVocaRepository.setQuiz(userId);
+        ConvertDate convertDate = new ConvertDate(LocalDateTime.now());
+        Long intDate = convertDate.intDate();
+        QuizLog quizLog = QuizLog.builder()
+                .userId(userId)
+                .quizTime(intDate)
+                .totalNum(myVocaList.size())
+                .build();
+        myVocaRepository.saveQuizLog(quizLog);
         int idx = 1;
         for (MyVoca myVoca:myVocaList){
-
             myVoca.setExamNum(idx++);
-//            String voca = myVoca.getVoca();
-//            VocabularyList vocabulary = vocaRepository.searchVoca(voca).get(0);
-//            Exam exam = Exam.builder().
-//                    userTest(userTest).
-//                    vocabularyList(vocabulary).
-//                    examNum(idx++).
-//                    state(0).
-//                    build();
-//            myVocaRepository.setExam(exam);
         }
     }
     public List<MyVoca> getAllExam(String userId){
@@ -69,49 +65,43 @@ public class MyVocaService {
     }
     public ExamDto doQuiz(String id, String num){
         MyVoca myVoca =  myVocaRepository.doMyVocaQuiz(id,Integer.valueOf(num)).get(0);
-//        Exam exam = myVocaRepository.doQuiz(id,Integer.valueOf(num)).get(0);
         ExamDto examDto = ExamDto.builder().
                 examNum(String.valueOf(myVoca.getExamNum())).
-                //problem(exam.getVocabularyList().getVocaExplain()).
+                isImage(false).
                 problem(myVoca.getVoca()).
                 build();
         return examDto;
     }
     public void checkAnswer(String id,String userInput,String num){ //userInput은 사용자가 작성한 답안
-        //Exam exam = myVocaRepository.doQuiz(id,Integer.valueOf(num)).get(0);
         MyVoca myVoca =  myVocaRepository.doMyVocaQuiz(id,Integer.valueOf(num)).get(0);
         String voca  = myVoca.getVoca();
         String answer = vocaRepository.searchVoca(voca).get(0).getVocaExplain();
         String[] answerChat = gptService.recommend(voca,answer,userInput).split("!");
         if(answerChat[0].equals("오답")){
-            WrongAnswer wrongAnswer = WrongAnswer.builder().
+            QuizLog quizLog = examRepository.getRecentQuizLog(id);
+            WrongQuiz wrongQuiz = WrongQuiz.builder().
+                    quizLog(quizLog).
                     userId(id).
                     problem(voca).
                     commentary(answerChat[1]).
                     build();
-            myVocaRepository.saveWrongAnswer(wrongAnswer);
-        }
-//        if (exam.getVocabularyList().getVoca().equals(voca)) { //맞으면
-//            exam.updateAnswerCheck(1); //1로 update
-//            System.out.println("정답");
-//        }
-//        else{
-//            exam.updateAnswerCheck(-1); //-1로 update
-//            System.out.println("오답");
-//        }
-    }
-    public List<WrongAnswerDto> wrongAnswer(String id){
-        List<WrongAnswer> wrongAnswerList = wrongAnswerRepository.getUserWrongAnswer(id);
-        List<WrongAnswerDto> wrongAnswerDtoList = new ArrayList<>();
-        for(WrongAnswer wrongAnswer:wrongAnswerList){
+            myVocaRepository.saveWrongQuiz(wrongQuiz);
 
+        }
+    }
+    public List<WrongAnswerDto> wrongQuiz(String userId){
+        List<WrongAnswerDto> wrongAnswerDtoList = new ArrayList<>();
+        QuizLog quizLog = examRepository.getRecentQuizLog(userId);
+        List<WrongQuiz >wrongQuizList = wrongQuizRepository.getUserWrongQuiz(quizLog);
+        quizLog.updateWrongAnswerNum(wrongQuizList.size()); //오답문제 수 업데이트
+        for(WrongQuiz wrongQuiz : wrongQuizList){
             WrongAnswerDto wrongAnswerDto = WrongAnswerDto.builder().
-                    problem(wrongAnswer.getProblem()).
-                    //answer(wrongAnswer.).
-                    commentary(wrongAnswer.getCommentary()).
+                    problem(wrongQuiz.getProblem()).
+                    commentary(wrongQuiz.getCommentary()).
                     build();
             wrongAnswerDtoList.add(wrongAnswerDto);
         }
+
        return wrongAnswerDtoList;
     }
 }
