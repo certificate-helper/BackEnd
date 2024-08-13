@@ -47,4 +47,16 @@ public class StatisticService {
         }
         return  quizFrequencyDtoList;
     }
+
+    public List<AnswerRateDto> getQuizAnswerNum(String userId){
+        List<AnswerRateDto> answerRateDtoList = new ArrayList<>();
+        List<QuizLog> quizLogList =  statisticRepository.getUserQuizLog(userId);
+        for( QuizLog quizLog:quizLogList){
+            AnswerRateDto answerRateDto = AnswerRateDto.builder().
+                    answerRate(String.valueOf(quizLog.getTotalNum()-quizLog.getWrongAnswerNum())). //
+                            build();
+            answerRateDtoList.add(answerRateDto);
+        }
+        return answerRateDtoList;
+    }
 }

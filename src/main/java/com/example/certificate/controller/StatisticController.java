@@ -28,5 +28,9 @@ public class StatisticController {
         return statisticService.getProblemFrequency(id);
     }
 
+    @GetMapping (value = "/get-quiz-answer-num")
+    public List<AnswerRateDto> getQuizAnswerNum(@RequestParam("id") String id){
+        return statisticService.getQuizAnswerNum(id);
+    }
 
 }
