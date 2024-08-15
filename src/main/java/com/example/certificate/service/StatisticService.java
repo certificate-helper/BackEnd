@@ -2,6 +2,7 @@ package com.example.certificate.service;
 
 
 import com.example.certificate.dto.AnswerRateDto;
+import com.example.certificate.dto.CategoryCoutDto;
 import com.example.certificate.dto.QuizFrequencyDto;
 import com.example.certificate.entity.QuizLog;
 import com.example.certificate.repository.StatisticRepository;
@@ -31,7 +32,7 @@ public class StatisticService {
                 build();
         return answerRateDto;
     }
-
+    //틀린 단어 빈도수를 리턴해주는 함수
     public List<QuizFrequencyDto> getProblemFrequency(String userId){
         List<QuizFrequencyDto> quizFrequencyDtoList = new ArrayList<>();
         List<Object[]> results =  statisticRepository.getProblemFrequency(userId);
@@ -47,7 +48,7 @@ public class StatisticService {
         }
         return  quizFrequencyDtoList;
     }
-
+    //각 퀴즈 회차당 정답횟수를 리턴해주는 함수
     public List<AnswerRateDto> getQuizAnswerNum(String userId){
         List<AnswerRateDto> answerRateDtoList = new ArrayList<>();
         List<QuizLog> quizLogList =  statisticRepository.getUserQuizLog(userId);
@@ -58,5 +59,23 @@ public class StatisticService {
             answerRateDtoList.add(answerRateDto);
         }
         return answerRateDtoList;
+    }
+
+    public  List<CategoryCoutDto> getCategoryCountsByUserId(String userId){
+        List<CategoryCoutDto> categoryCoutDtoList = new ArrayList<>();
+        List<Object[]> results = statisticRepository.getCategoryCountsByUserId(userId);
+        for (Object[] result : results) {
+            String category = (String) result[0];
+            Long count = (Long) result[1];
+
+            CategoryCoutDto categoryCoutDto = CategoryCoutDto.builder().
+                    category(category).
+                    count(String.valueOf(count)).
+                    build();
+
+            categoryCoutDtoList.add(categoryCoutDto);
+        }
+
+        return  categoryCoutDtoList;
     }
 }

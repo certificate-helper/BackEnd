@@ -27,4 +27,14 @@ public class StatisticRepository {
                 .setParameter("userId", userId)
                 .getResultList();
     }
+
+    public List<Object[]> getCategoryCountsByUserId( String userId) {
+
+        return em.createQuery("SELECT wa.category, COUNT(wa) " +
+                "FROM WrongAnswer wa " +
+                "WHERE wa.userId = :userId " +
+                "GROUP BY wa.category", Object[].class)
+                .setParameter("userId", userId)
+                .getResultList();
+    }
 }

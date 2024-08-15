@@ -2,6 +2,7 @@ package com.example.certificate.controller;
 
 
 import com.example.certificate.dto.AnswerRateDto;
+import com.example.certificate.dto.CategoryCoutDto;
 import com.example.certificate.dto.QuizFrequencyDto;
 import com.example.certificate.service.StatisticService;
 import lombok.RequiredArgsConstructor;
@@ -33,4 +34,14 @@ public class StatisticController {
         return statisticService.getQuizAnswerNum(id);
     }
 
+    @GetMapping (value = "/get-wrong-category") //사용자가 틀린 기출 오답의 유형별 통계
+    public List<CategoryCoutDto> getCategoryCountsByUserId(@RequestParam("id") String id){
+        return  statisticService.getCategoryCountsByUserId(id);
+    }
+
+//   @GetMapping (value = "/get-category-trend") //출제 트랜드
+//    public List<CategoryCoutDto> getCategoryTrend(){
+//
+//        return
+//   }
 }
