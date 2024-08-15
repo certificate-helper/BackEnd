@@ -75,7 +75,23 @@ public class StatisticService {
 
             categoryCoutDtoList.add(categoryCoutDto);
         }
+        return  categoryCoutDtoList;
+    }
 
+    public  List<CategoryCoutDto>getCategoryTrend(){
+        List<CategoryCoutDto> categoryCoutDtoList = new ArrayList<>();
+        List<Object[]> results = statisticRepository.getCategoryTrend();
+        for (Object[] result : results) {
+            String category = (String) result[0];
+            Long count = (Long) result[1];
+
+            CategoryCoutDto categoryCoutDto = CategoryCoutDto.builder().
+                    category(category).
+                    count(String.valueOf(count)).
+                    build();
+
+            categoryCoutDtoList.add(categoryCoutDto);
+        }
         return  categoryCoutDtoList;
     }
 }

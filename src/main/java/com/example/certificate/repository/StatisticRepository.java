@@ -37,4 +37,11 @@ public class StatisticRepository {
                 .setParameter("userId", userId)
                 .getResultList();
     }
+
+    public List<Object[]> getCategoryTrend(){
+        return em.createQuery("SELECT wa.category, COUNT(wa) " +
+                        "FROM Test wa " +
+                        "GROUP BY wa.category", Object[].class)
+                .getResultList();
+    }
 }

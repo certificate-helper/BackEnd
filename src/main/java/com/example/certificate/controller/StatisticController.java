@@ -39,9 +39,8 @@ public class StatisticController {
         return  statisticService.getCategoryCountsByUserId(id);
     }
 
-//   @GetMapping (value = "/get-category-trend") //출제 트랜드
-//    public List<CategoryCoutDto> getCategoryTrend(){
-//
-//        return
-//   }
+   @GetMapping (value = "/get-category-trend") //출제 트랜드
+    public List<CategoryCoutDto> getCategoryTrend(){
+        return statisticService.getCategoryTrend();
+   }
 }
