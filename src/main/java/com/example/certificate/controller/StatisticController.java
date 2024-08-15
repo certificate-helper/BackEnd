@@ -43,4 +43,8 @@ public class StatisticController {
     public List<CategoryCoutDto> getCategoryTrend(){
         return statisticService.getCategoryTrend();
    }
+    @GetMapping (value = "/get-test-answer-num")
+   public List<AnswerRateDto> getUserTestRate(@RequestParam("id") String id){
+        return  statisticService.getUserTestRate(id);
+   }
 }

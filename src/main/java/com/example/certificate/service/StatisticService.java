@@ -4,8 +4,12 @@ package com.example.certificate.service;
 import com.example.certificate.dto.AnswerRateDto;
 import com.example.certificate.dto.CategoryCoutDto;
 import com.example.certificate.dto.QuizFrequencyDto;
+import com.example.certificate.entity.ExamLog;
 import com.example.certificate.entity.QuizLog;
+import com.example.certificate.entity.WrongAnswer;
+import com.example.certificate.repository.ExamRepository;
 import com.example.certificate.repository.StatisticRepository;
+import com.example.certificate.repository.WrongAnswerRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +22,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StatisticService {
     private final StatisticRepository statisticRepository;
-
+    private  final WrongAnswerRepository wrongAnswerRepository;
+    private  final ExamRepository examRepository;
     public AnswerRateDto getUserQuizLog(String userId){
         List<QuizLog> quizLogList =  statisticRepository.getUserQuizLog(userId);
         double totalNum = 0.0;
@@ -93,5 +98,24 @@ public class StatisticService {
             categoryCoutDtoList.add(categoryCoutDto);
         }
         return  categoryCoutDtoList;
+    }
+    public  List<AnswerRateDto> getUserTestRate(String userId){ //사용자가 친 시험당 정답률
+            List<Object[]> wrongAnswerList =  wrongAnswerRepository.getUserWrongAnswerCount(userId);
+            List<AnswerRateDto> answerRateDtoList = new ArrayList<>(wrongAnswerList.size());
+
+        for (Object[] result : wrongAnswerList) {
+            ExamLog examLog = (ExamLog) result[0];
+            Long count = (Long) result[1];
+            System.out.println("ExamLog: " + examLog + ", Count: " + count);
+        }
+            for(Object[] wrongAnswer:wrongAnswerList){
+                Long count = (Long)wrongAnswer[1];
+                AnswerRateDto answerRateDto = AnswerRateDto.builder().
+                        answerRate(String.valueOf(20-count.intValue())).
+                        build();
+
+                answerRateDtoList.add(answerRateDto);
+            }
+        return answerRateDtoList;
     }
 }
