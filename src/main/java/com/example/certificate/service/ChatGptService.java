@@ -36,7 +36,11 @@ public class ChatGptService {
 
     public String chat(String prompt){
         ChatRequest request = new ChatRequest(chatModel, prompt);
-
+        request.getMessages().add(new Message(
+                "system",
+                "You are a useful assistant who tells the user  determines whether a subjective question is correct or not."
+                        + " The first character always starts with '정답!' or '오답!' "
+                        + " And write it in Korean."));
 
         try {
             ChatResponse response  = template.postForObject(chatApiURL, request, ChatResponse.class);
@@ -53,6 +57,8 @@ public class ChatGptService {
                 "사용자가 입력한 서술형 답안은 "+userInput+"만약 너가 판단했을 때 맞으면 '정답!'이라고 말해주고 틀렸으면 '오답!'이라고" +
                 "말해주고 틀린이유 또한 뒤에 설명해줘." +"반든시 맨처음 단어는 정답! 또는 오답!으로 시작해야하고 오답! 일 경우 틀린 이유까지 서술해줘야해"
                 ;
-        return chat(answerPrompt);
+        String chatAnswer  =chat(answerPrompt);
+        System.out.println("gpt 응답: "+chatAnswer);
+        return chatAnswer;
     }
 }
