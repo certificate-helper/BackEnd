@@ -3,6 +3,7 @@ package com.example.certificate.service;
 
 import com.example.certificate.ConvertDate;
 import com.example.certificate.ImageLoader;
+import com.example.certificate.StringConverter;
 import com.example.certificate.dto.ExamDto;
 import com.example.certificate.entity.Exam;
 import com.example.certificate.entity.ExamLog;
@@ -75,23 +76,25 @@ public class TestService {
                     category(test.getCategory()).
                     imageUrl(test.getImageUrl()).
                     examNum(idx++).
+                    year(test.getYear()).
+                    round(test.getRound()).
                     build();
             testRepository.setExam(exam);
         }
     }
 
     public ExamDto getExam(String userId,String num){
-
+        //사용자 친 기출시험 중 제일 최근기록을 불러온다.
         ExamLog examLog = examRepository.getRecentExamLog(userId);
 
         Exam exam = examRepository.getRecentExam(examLog,Integer.valueOf(num));
         boolean isImage = false;
-        if (!exam.getImageUrl().equals("null")){
+        if (!exam.getImageUrl().equals("null")){ //기출문제에 이미지가 있으면
             isImage = true;
         }
         ImageLoader imageLoader = new ImageLoader(exam.getImageUrl()); //이미지 불러오는 클래스
         byte[] imageData = null;
-        if(isImage) {
+        if(isImage) { //기출문제에 이미지가 있으면 이미지 데이터를 삽입
             try {
                 imageData = imageLoader.loadImage(); //이미지 저장
             } catch (Exception e) {
@@ -115,7 +118,6 @@ public class TestService {
             if(answerChat[0].equals("정답")){
                 exam.updateAnswerCheck("O");
             }else{
-
                 exam.updateAnswerCheck("X");
                 ExamLog examLog = examRepository.getRecentExamLog(userId);
                 WrongAnswer wrongAnswer = WrongAnswer.builder().
@@ -123,26 +125,40 @@ public class TestService {
                         userId(userId).
                         problem(exam.getProblem()).
                         commentary(answerChat[1]).
-                        //testType("exam").
+                        year(exam.getYear()).
+                        round(exam.getRound()).
+                        category(exam.getCategory()).
+
                         build();
                 myVocaRepository.saveWrongAnswer(wrongAnswer);
             }
         }else{ // 단답형
-            if(exam.getAnswer().contains(userInput)){ //정답이면(,로 split 하는 로직 추가하기)
-                exam.updateAnswerCheck("O");
-            }else{ //
-                exam.updateAnswerCheck("X");
-                ExamLog examLog = examRepository.getRecentExamLog(userId);
-                WrongAnswer wrongAnswer = WrongAnswer.builder().
-                        examLog(examLog).
-                        userId(userId).
-                        problem(exam.getProblem()).
-                        commentary(exam.getAnswer()).
-                        //testType("exam").
-                        build();
-                myVocaRepository.saveWrongAnswer(wrongAnswer);
+            String[] answerList = userInput.replaceAll(" ","").split(",");  //복수정답은  ,를 기준으로 분리
+            StringConverter stringConverter = new StringConverter(); // 대문자로 치환해 주는 클래스 객체 생성
+            for (String userAnswer :answerList ){
+                userAnswer = stringConverter.convertToUpperCase(userAnswer); //사용자 답안을 영문 대문자로 치환
+                String examAnswer  = stringConverter.convertToUpperCase(exam.getAnswer().replaceAll(" ",""));//정답을 영문 대문자로 치환
+                if(examAnswer.contains(userAnswer)){ //정답이면
+                    exam.updateAnswerCheck("O");
+                }else{ //
 
+                    exam.updateAnswerCheck("X");
+                    ExamLog examLog = examRepository.getRecentExamLog(userId);
+                    WrongAnswer wrongAnswer = WrongAnswer.builder().
+                            examLog(examLog).
+                            userId(userId).
+                            problem(exam.getProblem()).
+                            commentary(exam.getAnswer()).
+                            year(exam.getYear()).
+                            round(exam.getRound()).
+                            category(exam.getCategory()).
+                            //testType("exam").
+                                    build();
+                    myVocaRepository.saveWrongAnswer(wrongAnswer);
+
+                }
             }
+
         }
     }
 }
