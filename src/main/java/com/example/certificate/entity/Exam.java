@@ -36,12 +36,19 @@ public class Exam {
 
     private String state; // 문제의 상태를 기록 (안 푼 문제는 ?, 맞은 문제는 O, 틀린 문제는 X)
 
+
+    @Column(nullable = false)
+    private int year; //기출 연도
+
+    @Column(nullable = false)
+    private int round; //회차
+
     public void updateAnswerCheck(String state) {
         this.state = state;
     } //
 
     @Builder
-    public Exam(ExamLog examLog,String problem,String answer,int examNum,String type,String category,String imageUrl ) {
+    public Exam(ExamLog examLog,String problem,String answer,int examNum,String type,String category,String imageUrl,int year,int round ) {
         this.examLog = examLog;
         this.problem = problem;
         this.answer = answer;
@@ -50,6 +57,8 @@ public class Exam {
         this.type = type;
         this.category = category;
         this.imageUrl = imageUrl; //이미지가 없으면 문자열 null
+        this.year = year;
+        this.round = round;
     }
 }
 

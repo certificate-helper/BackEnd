@@ -22,6 +22,9 @@ public class ExamLog {
     @Column
     private Long examDate ;
 
+
+
+
     @Builder
     public ExamLog(String userId,Long examDate){
         this.userId = userId;
