@@ -32,8 +32,12 @@ public class StatisticService {
             totalNum += quizLog.getTotalNum();
             wrongNum += quizLog.getWrongAnswerNum();
         }
+        String answerRate = String.valueOf(wrongNum/totalNum*100);
+        if(answerRate.length()>4){
+            answerRate = answerRate.substring(0,4);
+        }
         AnswerRateDto answerRateDto = AnswerRateDto.builder().
-                answerRate(String.valueOf(wrongNum/totalNum*100)). //
+                answerRate(answerRate). //
                 build();
         return answerRateDto;
     }
@@ -103,11 +107,11 @@ public class StatisticService {
             List<Object[]> wrongAnswerList =  wrongAnswerRepository.getUserWrongAnswerCount(userId);
             List<AnswerRateDto> answerRateDtoList = new ArrayList<>(wrongAnswerList.size());
 
-        for (Object[] result : wrongAnswerList) {
-            ExamLog examLog = (ExamLog) result[0];
-            Long count = (Long) result[1];
-            System.out.println("ExamLog: " + examLog + ", Count: " + count);
-        }
+//        for (Object[] result : wrongAnswerList) {
+//            ExamLog examLog = (ExamLog) result[0];
+//            Long count = (Long) result[1];
+//            System.out.println("ExamLog: " + examLog + ", Count: " + count);
+//        }
             for(Object[] wrongAnswer:wrongAnswerList){
                 Long count = (Long)wrongAnswer[1];
                 AnswerRateDto answerRateDto = AnswerRateDto.builder().
