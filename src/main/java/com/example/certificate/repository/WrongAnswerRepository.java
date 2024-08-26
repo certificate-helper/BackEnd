@@ -25,17 +25,12 @@ public class WrongAnswerRepository {
     }
 
     public List<Object []> getUserWrongAnswerCount(String  userId) {
-        String jpql = "SELECT wa.examLog, COUNT(wa) " +
+        return  em.createQuery( "SELECT wa.examLog, COUNT(wa) " +
                 "FROM WrongAnswer wa " +
                 "WHERE wa.userId = :userId " +
-                "GROUP BY wa.examLog";
-
-        // 쿼리 생성 및 파라미터 설정
-        TypedQuery<Object[]> query = em.createQuery(jpql, Object[].class);
-        query.setParameter("userId", userId);
-
-        // 쿼리 실행 및 결과 반환
-        return query.getResultList();
+                "GROUP BY wa.examLog", Object[].class)
+                .setParameter("userId", userId)
+                .getResultList();
     }
 
 
