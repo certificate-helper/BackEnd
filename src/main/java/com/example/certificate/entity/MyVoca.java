@@ -6,7 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table
+@Table( indexes = {
+        @Index(name = "idx_user_id", columnList = "userId")
+})
 @Getter
 @NoArgsConstructor
 public class MyVoca { //내 단어장

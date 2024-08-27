@@ -43,4 +43,10 @@ public class ExamRepository {
                 .setMaxResults(1) // 가장 첫 번째 값 하나만 반환
                 .getSingleResult();
     }
+
+    public List<Exam> getRecentWrongAnswer(ExamLog examLog){ //기출시험 문제에서 오답문제 가져오는 로직
+        return em.createQuery("SELECT e FROM Exam e WHERE e.examLog =:examLog AND  e.state = 'X'",Exam.class).
+                setParameter("examLog",examLog).
+                getResultList();
+    }
 }

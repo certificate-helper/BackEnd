@@ -23,18 +23,16 @@ public class MyVocaController {
     private final MyVocaService myVocaService;
     private final VocaService vocaService;
 
-    @PostMapping (value = "/saveMyVoca")  //내 단어장에 저장하는 컨트롤러
-    public void saveMyVoca(@RequestParam("id") String id,
-                           @RequestParam("voca") String voca){
+    @PostMapping (value = "/saveMyVoca", consumes = "application/json", produces = "application/json")  //내 단어장에 저장하는 컨트롤러
+    public void saveMyVoca(@RequestBody Map<String, String> requestData){
         System.out.println("save");
         //단어로 기본키 찾음
-        myVocaService.saveMyVoca(id,voca);
+        myVocaService.saveMyVoca(requestData.get("id"),requestData.get("voca"));
     }
-    @PostMapping(value = "/remove-my-voca")
-    public void removeMyVoca(@RequestParam("id") String id,
-                            @RequestParam("voca") String voca){
+    @PostMapping(value = "/remove-my-voca", consumes = "application/json", produces = "application/json")
+    public void removeMyVoca(@RequestBody Map<String, String> requestData){
         System.out.println("remove");
-        myVocaService.removeMyVoca(id,voca);
+        myVocaService.removeMyVoca(requestData.get("id"),requestData.get("voca"));
     }
    // @PostMapping(value  = "/setQuiz") //단어 퀴즈 세팅 컨트롤러
     @PostMapping(value = "/setQuiz", consumes = "application/json", produces = "application/json")

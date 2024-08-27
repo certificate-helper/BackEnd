@@ -77,6 +77,7 @@ public class MyVocaService {
         String voca  = myVoca.getVoca();
         String answer = vocaRepository.searchVoca(voca).get(0).getVocaExplain();
         String[] answerChat = gptService.recommend(voca,answer,userInput).split("!");
+
         if(answerChat[0].equals("오답")){
             QuizLog quizLog = examRepository.getRecentQuizLog(id);
             WrongQuiz wrongQuiz = WrongQuiz.builder().
